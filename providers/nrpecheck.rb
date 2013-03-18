@@ -23,7 +23,14 @@ end
 
 action :add do
   Chef::Log.info "Adding #{new_resource.command_name} to #{node['nagios']['nrpe']['conf_dir']}/nrpe.d/"
-  command = new_resource.command || "#{node['nagios']['plugin_dir']}/#{new_resource.command_name}"
+  plugin_path = "#{node['nagios']['plugin_dir']}/#{new_resource.command}"
+  remote_file plugin_path do
+    source "#{node['nagios']['plugins']['remote_source']}/#{new_resource.command_name}"
+    not_if node['nagios']['plugins']['remote_source'].nil?
+    only_if new_resource.use_remote
+  end
+  command = new_resource.command
+  command = plugin_path if ::File.exists?(plugin_path)
   file_contents = "command[#{new_resource.command_name}]=#{command}"
   file_contents += " -w #{new_resource.warning_condition}" unless new_resource.warning_condition.nil?
   file_contents += " -c #{new_resource.critical_condition}" unless new_resource.critical_condition.nil?

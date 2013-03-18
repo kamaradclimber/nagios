@@ -26,6 +26,7 @@ attribute :warning_condition, :kind_of => String, :default => nil
 attribute :critical_condition, :kind_of => String, :default => nil
 attribute :command, :kind_of => String
 attribute :parameters, :kind_of => String, :default => nil
+attribute :use_remote, :kind_of => [TrueClass, FalseClass], :default => false
 
 def initialize(*args)
   super
