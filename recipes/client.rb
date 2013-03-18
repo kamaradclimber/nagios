@@ -36,6 +36,7 @@ else
     mon_host << n['ipaddress']
   end
 end
+mon_host.concat node['nagios']['servers']
 
 include_recipe "nagios::client_#{node['nagios']['client']['install_method']}"
 
